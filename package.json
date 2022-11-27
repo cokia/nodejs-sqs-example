@@ -1,12 +1,17 @@
 {
   "name": "nodejs-sqs-example",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.ts",
   "repository": "https://github.com/cokia/nodejs-sqs-example",
   "author": "cokia <hanu@hanukoon.com>",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "nodejs": "^0.0.0",
-    "sqs-producer": "^2.1.0"
+    "sqs-producer": "^2.1.0",
+    "typescript": "^4.9.3"
+  },
+  "scripts": {
+    "start": "ts-node app.ts"
   }
 }
