@@ -1,0 +1,12 @@
+{
+  "name": "nodejs-sqs-example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/cokia/nodejs-sqs-example",
+  "author": "cokia <hanu@hanukoon.com>",
+  "license": "MIT",
+  "dependencies": {
+    "nodejs": "^0.0.0",
+    "sqs-producer": "^2.1.0"
+  }
+}
