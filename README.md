@@ -7,7 +7,7 @@ aws-sqs example with sqs-producer
   yarn
   ```
   ### Run producer
-  1. Create a .env file in the root directory and add the following variables
+  1. Create a .env file in the root directory and add the following variables (example at .env.example)
   * aws_access_key_id
   * aws_secret_access_key
   * region
@@ -21,6 +21,13 @@ aws-sqs example with sqs-producer
   yarn producer
   ```
   ### Run consumer
+  1. Create a .env file in the root directory and add the following variables (example at .env.example)
+  * aws_access_key_id
+  * aws_secret_access_key
+  * region
+  * queue_url
+
+  2. Run Consumer
   ```bash
   yarn consumer
   ```
@@ -62,7 +69,7 @@ const app = Consumer.create({
   queueUrl: config.queueUrl,
   region: config.region,
   handleMessage: async (message: { MessageId: string, ReceiptHandle: string, Body: string }) => {
-    console.log(`[${timestamp()}] {${message.MessageId}} ${message.Body} is received!`)
+    console.log(`{${message.MessageId}} ${message.Body} is received!`)
     // Super Awesome Messaging handling logic 🚀
   },
   sqs: new AWS.SQS()
