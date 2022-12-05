@@ -2,24 +2,26 @@ import { Producer } from 'sqs-producer';
 import config from './config'
 import crypto from 'crypto'
 
-const exampleFunction = async () => {
+function timestamp() {
+  var today = new Date();
+  today.setHours(today.getHours() + 9);
+  return today.toISOString().replace('T', ' ').substring(0, 19);
+}
+
+const exampleProducerFunctionForStandardQueue = async () => {
   // create custom producer (supporting all opts as per the API docs: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#constructor-property)
   const producer = Producer.create({
     queueUrl: config.queueUrl,
     region: config.region
   });
 
-  // send messages to the queue
+  // send simple messages to the queue
   await producer.send(['msg1', 'msg2']);
-
-  // get the current size of the queue
-  const size = await producer.queueSize();
-  console.log(`There are ${size} messages on the queue.`);
 
   // send a message to the queue with a specific ID (by default the body is used as the ID)
   await producer.send([{
     id: 'id1',
-    body: 'Hello world'
+    body: 'Hello Standard Queue!' + timestamp()
   }]);
 
   // send a message to the queue with
@@ -40,6 +42,19 @@ const exampleFunction = async () => {
       delaySeconds: 5
     }
   ]);
+  console.log(`[${timestamp()}] successfully sent message to FIFO queue!`)
+
+  // get the current size of the queue
+  const size = await producer.queueSize();
+  console.log(`There are ${size} messages on the queue.`);
+}
+
+const exampleProducerFunctionForFIFOQueue = async () => {
+  // create custom producer (supporting all opts as per the API docs: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#constructor-property)
+  const producer = Producer.create({
+    queueUrl: config.queueUrl,
+    region: config.region
+  });
 
   // send a message to a FIFO queue
   //
@@ -50,13 +65,20 @@ const exampleFunction = async () => {
   // deduplicationId can be excluded if content-based deduplication is enabled
   //
   // http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queue-recommendations.html
-  const body = 'Hello world from our FIFO queue!' + new Date().toISOString()
+  const body = 'Hello FIFO queue! ' + timestamp()
   await producer.send({
     id: "testId",
     body,
     groupId: 'group1234',
     // generate md5 hash of body
-    deduplicationId: crypto.createHash('md5').update(body).digest('hex')  // typically a hash of the message body
+    deduplicationId: crypto.createHash('md5').update(body).digest('hex')
   });
+
+  console.log(`[${timestamp()}] successfully sent message to FIFO queue!`)
+
+  const size = await producer.queueSize();
+  console.log(`There are ${size} messages on the queue.`);
 }
-exampleFunction()
+
+exampleProducerFunctionForFIFOQueue()
+// exampleProducerFunctionForStandardQueue()
